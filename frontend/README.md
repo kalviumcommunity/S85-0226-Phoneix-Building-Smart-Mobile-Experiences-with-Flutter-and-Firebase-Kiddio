@@ -42,3 +42,5 @@ return LayoutBuilder(builder: (context, constraints) {
 ```
 
 Take screenshots of the app in portrait and landscape, and include them here when submitting.
+
+See also: `PROJECT_STRUCTURE.md` for a short guide to this Flutter app's folder layout.
