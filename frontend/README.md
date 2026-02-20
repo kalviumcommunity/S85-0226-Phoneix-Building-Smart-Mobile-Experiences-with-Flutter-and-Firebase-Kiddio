@@ -180,41 +180,67 @@ flutter pub get
 - `lib/screens/auth_screen.dart` — Signup and Login UI with FirebaseAuth logic.
 - `lib/screens/responsive_home.dart` — App home; includes a Sign out button.
 
-### Code snippets
 
-Signup / Login (already implemented in `auth_screen.dart`):
+## Persistent Session & Auto-Login Flow
 
-```dart
-await FirebaseAuth.instance.createUserWithEmailAndPassword(
-	email: email,
-	password: password,
-);
+### How Persistent Login Works
+Firebase Authentication automatically persists user sessions securely on device. This means:
+- Users stay logged in after closing/restarting the app (auto-login)
+- Session tokens are refreshed in the background
+- No need for manual storage (e.g., SharedPreferences)
 
-await FirebaseAuth.instance.signInWithEmailAndPassword(
-	email: email,
-	password: password,
-);
-```
-
-Listen to auth state changes:
+### StreamBuilder for Session Routing
+The app uses a global `StreamBuilder` on `FirebaseAuth.instance.authStateChanges()` in `main.dart`:
 
 ```dart
-FirebaseAuth.instance.authStateChanges().listen((user) {
-	if (user == null) print('signed out');
-	else print('signed in: ${user.email}');
-});
+home: StreamBuilder<User?>(
+  stream: FirebaseAuth.instance.authStateChanges(),
+  builder: (ctx, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return Center(child: CircularProgressIndicator());
+    }
+    if (snapshot.hasData) {
+      return ResponsiveHome(); // or HomeScreen
+    }
+    return AuthScreen();
+  },
+),
 ```
+
+**Behavior:**
+- If logged in: goes directly to HomeScreen/ResponsiveHome
+- If logged out: shows AuthScreen
+- While checking: shows loading indicator (SplashScreen optional)
+
+### Auto-Login & Logout Flow
+1. **Login:**
+   - User logs in via AuthScreen
+   - Navigates to HomeScreen
+2. **App Restart:**
+   - Close and reopen app
+   - App skips login, goes straight to HomeScreen (auto-login)
+3. **Logout:**
+   - Tap logout button (in HomeScreen/ResponsiveHome)
+   - Calls `FirebaseAuth.instance.signOut()`
+   - User is redirected to AuthScreen
+   - Restarting app keeps user logged out
 
 ### Screenshots / Evidence
 
-- App Authentication UI: (add screenshot here)
-- Firebase Console → Users: (add screenshot here)
+- HomeScreen before restart: (add screenshot here)
+- Auto-login after restart: (add screenshot here)
+- Logout screen: (add screenshot here)
 
 ### Reflection
 
-- Why Firebase Auth: Provides secure, maintained authentication without a custom backend; supports multiple providers and integrates with other Firebase services.
-- Security features: Email verification, secure token lifecycle, integrated rules with other Firebase services.
-- Challenges: Ensure `firebase_options.dart` is present for each platform and compatible plugin versions. Use `flutterfire configure` to generate platform options.
+- **Why persistent sessions improve UX:**
+  - Users don’t have to log in every time, making the app feel seamless and professional.
+- **How Firebase simplifies session management:**
+  - Handles secure token storage, refresh, and session state automatically.
+  - No manual code for session persistence needed.
+- **Limitations / Challenges:**
+  - Brief loading state on startup (can be improved with a SplashScreen)
+  - Must ensure correct routing and avoid flicker between screens
 
 ---
 
