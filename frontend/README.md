@@ -44,3 +44,70 @@ return LayoutBuilder(builder: (context, constraints) {
 Take screenshots of the app in portrait and landscape, and include them here when submitting.
 
 See also: `PROJECT_STRUCTURE.md` for a short guide to this Flutter app's folder layout.
+
+## Firebase Email & Password Authentication
+
+This project includes a simple Email/Password authentication flow using Firebase Authentication.
+
+### Setup
+
+1. Enable Email/Password sign-in in your Firebase Console: Authentication → Sign-in method → Email/Password → Enable.
+2. Install FlutterFire CLI and configure your Firebase app (generates `firebase_options.dart`):
+
+```bash
+dart pub global activate flutterfire_cli
+cd frontend
+flutterfire configure
+flutter pub get
+```
+
+3. Ensure the following dependencies exist in `pubspec.yaml` and run `flutter pub get`:
+
+- `firebase_core: ^3.0.0`
+- `firebase_auth: ^5.0.0`
+
+4. Run the app and use the Authentication screen to Signup/Login. New users will appear in Firebase Console → Authentication → Users.
+
+### Files
+
+- `lib/main.dart` — Initializes Firebase and shows either the Auth screen or the app home depending on authentication state.
+- `lib/screens/auth_screen.dart` — Signup and Login UI with FirebaseAuth logic.
+- `lib/screens/responsive_home.dart` — App home; includes a Sign out button.
+
+### Code snippets
+
+Signup / Login (already implemented in `auth_screen.dart`):
+
+```dart
+await FirebaseAuth.instance.createUserWithEmailAndPassword(
+	email: email,
+	password: password,
+);
+
+await FirebaseAuth.instance.signInWithEmailAndPassword(
+	email: email,
+	password: password,
+);
+```
+
+Listen to auth state changes:
+
+```dart
+FirebaseAuth.instance.authStateChanges().listen((user) {
+	if (user == null) print('signed out');
+	else print('signed in: ${user.email}');
+});
+```
+
+### Screenshots / Evidence
+
+- App Authentication UI: (add screenshot here)
+- Firebase Console → Users: (add screenshot here)
+
+### Reflection
+
+- Why Firebase Auth: Provides secure, maintained authentication without a custom backend; supports multiple providers and integrates with other Firebase services.
+- Security features: Email verification, secure token lifecycle, integrated rules with other Firebase services.
+- Challenges: Ensure `firebase_options.dart` is present for each platform and compatible plugin versions. Use `flutterfire configure` to generate platform options.
+
+---

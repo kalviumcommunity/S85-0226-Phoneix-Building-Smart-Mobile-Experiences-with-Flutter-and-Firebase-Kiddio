@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ResponsiveHome extends StatelessWidget {
   const ResponsiveHome({Key? key}) : super(key: key);
@@ -18,6 +19,15 @@ class ResponsiveHome extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Responsive Home'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            tooltip: 'Sign out',
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+            },
+          )
+        ],
       ),
       body: LayoutBuilder(builder: (context, constraints) {
         if (isTablet) {
