@@ -106,3 +106,47 @@ flutter pub get
 
 ## Pro Tip
 The FlutterFire CLI ensures your Firebase SDKs are always correctly configured and updated — one command saves hours of manual editing and debugging.
+
+
+# Firebase Auth Flow — Flutter
+
+This project implements a complete authentication flow using Firebase Authentication.
+
+## Features
+- Sign Up
+- Login
+- Logout
+- Real-time session handling
+- Automatic navigation using authStateChanges()
+
+## How It Works
+
+### Sign Up
+Uses:
+FirebaseAuth.instance.createUserWithEmailAndPassword()
+
+### Login
+Uses:
+FirebaseAuth.instance.signInWithEmailAndPassword()
+
+### Logout
+Uses:
+FirebaseAuth.instance.signOut()
+
+### Session Handling
+StreamBuilder listens to authStateChanges() to switch screens automatically.
+
+## Screens
+- AuthScreen → Login & Sign Up
+- HomeScreen → Logged-in state
+
+## Reflection
+
+Hardest Part:
+Managing UI state between login and signup modes.
+
+Why StreamBuilder helps:
+Removes manual navigation and keeps UI synced with session state.
+
+Why logout is important:
+Prevents unauthorized access and clears session securely.

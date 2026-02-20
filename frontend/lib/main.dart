@@ -9,7 +9,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
-}
+}main.dart
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
