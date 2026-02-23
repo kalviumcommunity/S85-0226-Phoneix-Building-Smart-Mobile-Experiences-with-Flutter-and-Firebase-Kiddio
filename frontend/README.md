@@ -42,3 +42,39 @@ return LayoutBuilder(builder: (context, constraints) {
 ```
 
 Take screenshots of the app in portrait and landscape, and include them here when submitting.
+
+## Reusable Custom Widgets
+
+This project demonstrates reusable custom widgets placed under `lib/widgets/` and reused across screens.
+
+Included widgets:
+
+- `lib/widgets/info_card.dart` — `InfoCard` is a small stateless card component that displays an icon, title, subtitle and accepts an optional `onTap`.
+- `lib/widgets/custom_button.dart` — `CustomButton` is a simple wrapper around `ElevatedButton` for consistent styling.
+
+Usage examples (already wired in the app):
+
+```dart
+// Create an InfoCard
+InfoCard(
+	title: 'Profile',
+	subtitle: 'View details',
+	icon: Icons.person,
+	onTap: () => Navigator.push(...),
+);
+```
+
+Screens demonstrating reuse:
+
+- `lib/screens/responsive_home.dart` — uses `InfoCard` instances in both tablet and phone layouts.
+- `lib/screens/details_screen.dart` — shows a single `InfoCard` instance.
+
+Add screenshots showing the widget reused in multiple places (place in `frontend/screenshots/`):
+
+- `./screenshots/info_card_home.png`
+- `./screenshots/info_card_details.png`
+
+Reflection:
+
+- Reusable widgets reduce duplication and centralize UI updates.
+- Challenges: designing flexible APIs (props) so widgets are useful in multiple contexts.

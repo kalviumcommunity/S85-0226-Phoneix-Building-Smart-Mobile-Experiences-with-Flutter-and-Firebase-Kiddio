@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../widgets/info_card.dart';
+import 'details_screen.dart';
 
 class ResponsiveHome extends StatelessWidget {
   const ResponsiveHome({Key? key}) : super(key: key);
@@ -47,20 +49,11 @@ class ResponsiveHome extends StatelessWidget {
                             childAspectRatio: 3 / 2,
                           ),
                           itemCount: 6,
-                          itemBuilder: (context, index) => Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  FittedBox(fit: BoxFit.scaleDown, child: Icon(Icons.devices, size: 36)),
-                                  const SizedBox(height: 8),
-                                  Text('Card ${index + 1}', style: TextStyle(fontSize: bodySize, fontWeight: FontWeight.w600)),
-                                  const SizedBox(height: 6),
-                                  Text('Adaptive content flows here.', style: TextStyle(fontSize: bodySize * 0.9)),
-                                ],
-                              ),
-                            ),
+                          itemBuilder: (context, index) => InfoCard(
+                            title: 'Card ${index + 1}',
+                            subtitle: 'Adaptive content flows here.',
+                            icon: Icons.devices,
+                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DetailsScreen())),
                           ),
                         ),
                       ),
@@ -80,7 +73,7 @@ class ResponsiveHome extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       ElevatedButton.icon(
-                        onPressed: () {},
+                        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DetailsScreen())),
                         icon: const Icon(Icons.navigation),
                         label: const Text('Primary Action'),
                       ),
@@ -131,25 +124,18 @@ class ResponsiveHome extends StatelessWidget {
                     6,
                     (index) => SizedBox(
                       width: (screenWidth - horizontalPadding * 2 - 16) / 2,
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              FittedBox(fit: BoxFit.scaleDown, child: Icon(Icons.label_outline, size: 28)),
-                              const SizedBox(height: 8),
-                              Text('Item ${index + 1}', style: TextStyle(fontSize: bodySize, fontWeight: FontWeight.w600)),
-                            ],
-                          ),
-                        ),
+                      child: InfoCard(
+                        title: 'Item ${index + 1}',
+                        subtitle: 'Tap to view details',
+                        icon: Icons.label_outline,
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DetailsScreen())),
                       ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DetailsScreen())),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12.0),
                     child: Text('Take Action', style: TextStyle(fontSize: bodySize, fontWeight: FontWeight.bold)),
