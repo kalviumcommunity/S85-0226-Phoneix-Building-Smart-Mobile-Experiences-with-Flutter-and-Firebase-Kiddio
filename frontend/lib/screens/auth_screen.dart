@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({Key? key}) : super(key: key);
@@ -31,14 +32,25 @@ class _AuthScreenState extends State<AuthScreen> {
           password: _passwordController.text.trim(),
         );
       } else {
-        await _auth.createUserWithEmailAndPassword(
+        final userCredential = await _auth.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
+        // Create user profile in Firestore
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .set({
+              'name': '',
+              'email': userCredential.user!.email,
+              'createdAt': FieldValue.serverTimestamp(),
+            });
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(isLogin ? 'Login Successful!' : 'Signup Successful!')),
+        SnackBar(
+          content: Text(isLogin ? 'Login Successful!' : 'Signup Successful!'),
+        ),
       );
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -82,7 +94,11 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
             TextButton(
               onPressed: () => setState(() => isLogin = !isLogin),
-              child: Text(isLogin ? 'Create new account' : 'Already have an account? Login'),
+              child: Text(
+                isLogin
+                    ? 'Create new account'
+                    : 'Already have an account? Login',
+              ),
             ),
           ],
         ),
