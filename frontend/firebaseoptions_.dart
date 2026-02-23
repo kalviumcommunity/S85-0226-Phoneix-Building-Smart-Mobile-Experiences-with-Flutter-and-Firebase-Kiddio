@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'task_list_page.dart';
+import 'firebase_options.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+       NAME OF FILE?
+
   runApp(const MyApp());
 }
 
@@ -15,7 +19,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: TaskListPage(),
+      home: Scaffold(
+        body: Center(
+          child: Text("Firebase Connected ✅"),
+        ),
+      ),
     );
   }
 }
