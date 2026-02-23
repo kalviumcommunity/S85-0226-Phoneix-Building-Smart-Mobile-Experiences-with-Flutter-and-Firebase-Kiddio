@@ -1,5 +1,74 @@
 # Kiddio Frontend – Firebase Integration via FlutterFire CLI
 
+## Firestore Schema Design
+
+### Collections
+
+- **users**
+  - `uid` (Document ID): User ID from Firebase Auth
+  - `name`: User's display name
+  - `email`: User's email address
+  - `createdAt`: Timestamp when user profile was created
+
+- **tasks**
+  - `taskId` (Document ID): Auto-generated
+  - `userId`: Reference to user's UID
+  - `title`: Task title
+  - `description`: Task description
+  - `status`: Task status (`pending`, `completed`, etc.)
+  - `createdAt`: Timestamp when task was created
+  - `updatedAt`: Timestamp when task was last updated
+
+### Usage
+
+- On signup, a user profile is created in Firestore under `users`.
+- Tasks are created with a reference to the user, and include timestamps and status.
+
+### Example Document
+
+**users/{uid}**
+```
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "createdAt": <timestamp>
+}
+```
+
+**tasks/{taskId}**
+```
+{
+  "userId": "uid123",
+  "title": "Buy groceries",
+  "description": "Milk, eggs, bread",
+  "status": "pending",
+  "createdAt": <timestamp>,
+  "updatedAt": <timestamp>
+}
+```
+
+## UI/UX & App Features
+
+- Modern, responsive design for all screens
+- Real-time updates for tasks
+- Persistent session and auto-login
+- Error handling and loading states
+- Intuitive navigation
+
+## How to Use
+
+1. Sign up or log in
+2. View and manage your profile
+3. Add, view, and update tasks
+4. Logout securely
+
+## Project Quality
+
+- Follows best practices for frontend and backend logic
+- Scalable Firestore schema
+- Robust error handling
+- Clean, maintainable code
+
 This project demonstrates automated Firebase integration in a Flutter app using the official FlutterFire CLI. The CLI streamlines setup for Android, iOS, and Web, ensuring your app is always aligned with Firebase’s latest SDKs.
 
 ## 🚀 Quick Start

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class TaskListPage extends StatelessWidget {
   const TaskListPage({super.key});
@@ -8,6 +9,21 @@ class TaskListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Firestore Tasks")),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final user = FirebaseAuth.instance.currentUser;
+          if (user == null) return;
+          await FirebaseFirestore.instance.collection('tasks').add({
+            'userId': user.uid,
+            'title': 'New Task',
+            'description': 'Describe your task',
+            'status': 'pending',
+            'createdAt': FieldValue.serverTimestamp(),
+            'updatedAt': FieldValue.serverTimestamp(),
+          });
+        },
+        child: const Icon(Icons.add),
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('tasks')
@@ -35,6 +51,7 @@ class TaskListPage extends StatelessWidget {
                 child: ListTile(
                   title: Text(data['title'] ?? "No title"),
                   subtitle: Text(data['description'] ?? ""),
+                  trailing: Text(data['status'] ?? "pending"),
                 ),
               );
             },
