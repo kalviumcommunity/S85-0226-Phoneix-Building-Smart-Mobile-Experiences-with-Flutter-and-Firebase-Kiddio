@@ -5,9 +5,11 @@ class ProfilePage extends StatelessWidget {
   final String userId;
   const ProfilePage({super.key, required this.userId});
 
-  Future<void> _editExperience(BuildContext context, int currentExperience) async {
-    final TextEditingController controller = TextEditingController(text: currentExperience.toString());
-    
+  Future<void> _editExperience(
+      BuildContext context, int currentExperience) async {
+    final TextEditingController controller =
+        TextEditingController(text: currentExperience.toString());
+
     return showDialog(
       context: context,
       builder: (context) {
@@ -16,7 +18,9 @@ class ProfilePage extends StatelessWidget {
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(hintText: "Enter years of experience"),
+            decoration: const InputDecoration(
+              hintText: 'Enter years of experience',
+            ),
           ),
           actions: [
             TextButton(
@@ -47,19 +51,30 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Profile")),
+      appBar: AppBar(title: const Text('Secure Profile')),
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
             .doc(userId)
             .snapshots(),
         builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            // This will surface "Permission denied" when the Firestore
+            // Security Rules block access to another user's document.
+            return Center(
+              child: Text(
+                'Error: ${snapshot.error}',
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
+
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
           if (!snapshot.hasData || !snapshot.data!.exists) {
-            return const Center(child: Text("User not found"));
+            return const Center(child: Text('User not found'));
           }
 
           final data = snapshot.data!.data() as Map<String, dynamic>;
@@ -70,14 +85,16 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Name: ${data['name'] ?? ''}",
-                    style: const TextStyle(fontSize: 20)),
+                Text(
+                  'Name: ${data['name'] ?? ''}',
+                  style: const TextStyle(fontSize: 20),
+                ),
                 const SizedBox(height: 8),
-                Text("Email: ${data['email'] ?? ''}"),
+                Text('Email: ${data['email'] ?? ''}'),
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Text("Years of Experience: $experience"),
+                    Text('Years of Experience: $experience'),
                     IconButton(
                       icon: const Icon(Icons.edit, size: 20),
                       onPressed: () => _editExperience(context, experience),
