@@ -356,3 +356,34 @@ Reflection:
 Why logout is important:
 Prevents unauthorized access and clears session securely.
 
+## Firestore Queries, Filters & Ordering
+
+This project includes a small Firestore demo that shows how to structure queries using `where`, `orderBy` and `limit`, and how to display results in real time using `StreamBuilder`.
+
+Example query used in `lib/screens/firestore_demo.dart`:
+
+```dart
+FirebaseFirestore.instance
+  .collection('tasks')
+  .where('isCompleted', isEqualTo: false)
+  .orderBy('priority', descending: true)
+  .limit(20)
+  .snapshots();
+```
+
+This query fetches only incomplete tasks, sorts them by `priority` (highest first), and limits the results for performance.
+
+To add test data from the app, use the "Add Test" button in the Firestore demo screen — it writes a sample document with `title`, `priority`, `isCompleted`, and `createdAt`.
+
+Screenshots to include (place in `frontend/screenshots/`):
+
+- `./screenshots/firestore_list.png` — App showing filtered/sorted list
+- `./screenshots/firestore_console.png` — Firestore console showing `tasks` documents
+
+Notes & Best Practices:
+
+- If Firestore prompts for a composite index when combining `where` + `orderBy`, follow the link in the error message to create the index in the console.
+- Index fields used in queries for faster reads.
+- Use timestamps (`createdAt`) for stable ordering of recent items.
+
+

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/info_card.dart';
 import 'details_screen.dart';
+import 'firestore_demo.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -70,6 +71,12 @@ class ResponsiveHome extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    tooltip: 'Firestore Demo',
+                    icon: const Icon(Icons.storage),
+                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FirestoreDemo())),
                   ),
                 ),
                 const SizedBox(width: 16),
