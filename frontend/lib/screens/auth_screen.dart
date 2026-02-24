@@ -43,20 +43,24 @@ class _AuthScreenState extends State<AuthScreen> {
             .set({
               'name': '',
               'email': userCredential.user!.email,
+              'yearsOfExperience': 0,
               'createdAt': FieldValue.serverTimestamp(),
             });
       }
 
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(isLogin ? 'Login Successful!' : 'Signup Successful!'),
         ),
       );
     } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.message ?? 'Authentication Error')),
       );
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('An unexpected error occurred')),
       );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-3.32
 import '../widgets/info_card.dart';
 import 'details_screen.dart';
 

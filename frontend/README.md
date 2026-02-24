@@ -8,6 +8,7 @@
   - `uid` (Document ID): User ID from Firebase Auth
   - `name`: User's display name
   - `email`: User's email address
+  - `yearsOfExperience`: Sitter's years of experience
   - `createdAt`: Timestamp when user profile was created
 
 - **tasks**
@@ -31,6 +32,7 @@
 {
   "name": "John Doe",
   "email": "john@example.com",
+  "yearsOfExperience": 5,
   "createdAt": <timestamp>
 }
 ```
