@@ -5,15 +5,54 @@ class ProfilePage extends StatelessWidget {
   final String userId;
   const ProfilePage({super.key, required this.userId});
 
+  Future<void> _editExperience(BuildContext context, int currentExperience) async {
+    final TextEditingController controller = TextEditingController(text: currentExperience.toString());
+    
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Years of Experience'),
+          content: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(hintText: "Enter years of experience"),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final int? newExperience = int.tryParse(controller.text);
+                if (newExperience != null) {
+                  await FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(userId)
+                      .update({'yearsOfExperience': newExperience});
+                }
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Profile")),
-      body: FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance
+      body: StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
             .collection('users')
             .doc(userId)
-            .get(),
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -24,6 +63,7 @@ class ProfilePage extends StatelessWidget {
           }
 
           final data = snapshot.data!.data() as Map<String, dynamic>;
+          final int experience = data['yearsOfExperience'] ?? 0;
 
           return Padding(
             padding: const EdgeInsets.all(16),
@@ -34,6 +74,16 @@ class ProfilePage extends StatelessWidget {
                     style: const TextStyle(fontSize: 20)),
                 const SizedBox(height: 8),
                 Text("Email: ${data['email'] ?? ''}"),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text("Years of Experience: $experience"),
+                    IconButton(
+                      icon: const Icon(Icons.edit, size: 20),
+                      onPressed: () => _editExperience(context, experience),
+                    ),
+                  ],
+                ),
               ],
             ),
           );
