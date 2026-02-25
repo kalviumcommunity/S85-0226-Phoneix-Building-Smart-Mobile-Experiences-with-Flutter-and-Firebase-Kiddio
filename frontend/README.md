@@ -356,6 +356,32 @@ Reflection:
 Why logout is important:
 Prevents unauthorized access and clears session securely.
 
+## Stateless vs Stateful Demo
+
+This repo includes a small demo screen that demonstrates the difference between `StatelessWidget` and `StatefulWidget`.
+
+- `lib/screens/stateless_stateful_demo.dart` — shows a `HeaderWidget` (stateless) and `CounterColorWidget` (stateful).
+
+How to run the demo:
+
+1. Start the app:
+```powershell
+cd frontend
+flutter pub get
+flutter run -d <deviceId>
+```
+2. From the home screen tap the "toggle" icon in the AppBar to open the demo.
+
+What to capture for submission:
+- Initial UI (before interaction)
+- UI after tapping `Increment` and `Toggle Color`
+
+Reflection:
+
+- The `HeaderWidget` is a `StatelessWidget` — it renders the title and doesn't hold mutable state.
+- The `CounterColorWidget` is `StatefulWidget` — it uses `setState()` to update the counter and background color.
+
+
 ## Firestore Queries, Filters & Ordering
 
 This project includes a small Firestore demo that shows how to structure queries using `where`, `orderBy` and `limit`, and how to display results in real time using `StreamBuilder`.

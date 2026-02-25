@@ -4,6 +4,7 @@ import 'details_screen.dart';
 import 'firestore_demo.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'stateless_stateful_demo.dart';
 
 
 class ResponsiveHome extends StatelessWidget {
@@ -32,6 +33,17 @@ class ResponsiveHome extends StatelessWidget {
               await FirebaseAuth.instance.signOut();
             },
           )
+          ,
+          IconButton(
+            tooltip: 'Stateless/Stateful Demo',
+            icon: const Icon(Icons.toggle_on),
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const StatelessStatefulDemo())),
+          ),
+          IconButton(
+            tooltip: 'Firestore Demo',
+            icon: const Icon(Icons.storage),
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FirestoreDemo())),
+          ),
         ],
       ),
       body: LayoutBuilder(builder: (context, constraints) {
@@ -71,12 +83,6 @@ class ResponsiveHome extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    tooltip: 'Firestore Demo',
-                    icon: const Icon(Icons.storage),
-                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FirestoreDemo())),
                   ),
                 ),
                 const SizedBox(width: 16),
