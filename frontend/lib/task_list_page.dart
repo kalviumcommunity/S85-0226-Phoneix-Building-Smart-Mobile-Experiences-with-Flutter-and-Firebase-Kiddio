@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'profile_page.dart';
+import 'screens/widget_tree_demo.dart';
 
 class TaskListPage extends StatelessWidget {
   const TaskListPage({super.key});
@@ -64,6 +65,18 @@ class TaskListPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Firestore Tasks + Secure Profile'),
         actions: [
+          IconButton(
+            tooltip: 'Widget Tree Demo',
+            icon: const Icon(Icons.account_tree),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const WidgetTreeDemo(),
+                ),
+              );
+            },
+          ),
           IconButton(
             tooltip: 'My Secure Profile',
             icon: const Icon(Icons.person),
