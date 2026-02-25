@@ -56,6 +56,9 @@
 - Persistent session and auto-login
 - Error handling and loading states
 - Intuitive navigation
+- **Implemented Task: Simple UI handling (Checkbox clicks)**:
+  - Added checkboxes for task status updates in `TaskListPage`.
+  - Added "Remember me" checkbox in `AuthScreen` for improved UX.
 
 ## How to Use
 

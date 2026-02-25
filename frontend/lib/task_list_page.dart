@@ -131,7 +131,19 @@ class TaskListPage extends StatelessWidget {
                 child: ListTile(
                   title: Text(data['title'] ?? 'No title'),
                   subtitle: Text(data['description'] ?? ''),
-                  trailing: Text(data['status'] ?? 'pending'),
+                  trailing: Checkbox(
+                    value: data['status'] == 'completed',
+                    onChanged: (bool? newValue) async {
+                      if (newValue == null) return;
+                      await FirebaseFirestore.instance
+                          .collection('tasks')
+                          .doc(task.id)
+                          .update({
+                        'status': newValue ? 'completed' : 'pending',
+                        'updatedAt': FieldValue.serverTimestamp(),
+                      });
+                    },
+                  ),
                 ),
               );
             },

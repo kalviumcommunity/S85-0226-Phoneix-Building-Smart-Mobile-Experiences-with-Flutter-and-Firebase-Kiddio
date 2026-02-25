@@ -15,6 +15,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final _passwordController = TextEditingController();
   bool isLogin = true;
   bool _loading = false;
+  bool _rememberMe = false;
 
   @override
   void dispose() {
@@ -89,7 +90,19 @@ class _AuthScreenState extends State<AuthScreen> {
               obscureText: true,
               decoration: const InputDecoration(labelText: 'Password'),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 8),
+            CheckboxListTile(
+              title: const Text('Remember me'),
+              value: _rememberMe,
+              onChanged: (bool? value) {
+                setState(() {
+                  _rememberMe = value ?? false;
+                });
+              },
+              controlAffinity: ListTileControlAffinity.leading,
+              contentPadding: EdgeInsets.zero,
+            ),
+            const SizedBox(height: 12),
             _loading
                 ? const CircularProgressIndicator()
                 : ElevatedButton(
