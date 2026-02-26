@@ -89,6 +89,30 @@ class TaskListPage extends StatelessWidget {
             icon: const Icon(Icons.lock),
             onPressed: () => _openOtherProfileDialog(context),
           ),
+          IconButton(
+            tooltip: 'Favorites – Screen A',
+            icon: const Icon(Icons.favorite_border),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const FavoritesAddScreen(),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            tooltip: 'Favorites – Screen B',
+            icon: const Icon(Icons.list),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const FavoritesListScreen(),
+                ),
+              );
+            },
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -147,30 +171,6 @@ class TaskListPage extends StatelessWidget {
                     },
                   ),
                 ),
-          IconButton(
-            tooltip: 'Favorites – Screen A',
-            icon: const Icon(Icons.favorite_border),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const FavoritesAddScreen(),
-                ),
-              );
-            },
-          ),
-          IconButton(
-            tooltip: 'Favorites – Screen B',
-            icon: const Icon(Icons.list),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const FavoritesListScreen(),
-                ),
-              );
-            },
-          ),
               );
             },
           );

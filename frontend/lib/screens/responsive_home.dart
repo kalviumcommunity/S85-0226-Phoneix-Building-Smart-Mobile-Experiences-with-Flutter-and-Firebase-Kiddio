@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/info_card.dart';
 import 'details_screen.dart';
 import 'firestore_demo.dart';
+import 'responsive_layout.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'stateless_stateful_demo.dart';
@@ -43,6 +44,11 @@ class ResponsiveHome extends StatelessWidget {
             tooltip: 'Firestore Demo',
             icon: const Icon(Icons.storage),
             onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FirestoreDemo())),
+          ),
+          IconButton(
+            tooltip: 'Responsive Layout Demo',
+            icon: const Icon(Icons.dashboard),
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ResponsiveLayout())),
           ),
         ],
       ),
