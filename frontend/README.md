@@ -415,4 +415,62 @@ Notes & Best Practices:
 - Index fields used in queries for faster reads.
 - Use timestamps (`createdAt`) for stable ordering of recent items.
 
+## Responsive Layout — Rows, Columns & Containers (Task 3.17)
+
+This task demonstrates how to build responsive UIs in Flutter using **Row**, **Column**, **Container**, **MediaQuery**, **Expanded**, and **Flexible**.
+
+### File
+
+- `lib/screens/responsive_layout.dart` — Self-contained responsive screen accessible via the dashboard icon in the AppBar.
+
+### Key Concepts Used
+
+| Widget / API | Purpose |
+|---|---|
+| `Container` | Adds padding, decoration (gradients, shadows, rounded corners), and constraints |
+| `Row` | Lays children out horizontally (used for wide/tablet layout) |
+| `Column` | Lays children out vertically (used for narrow/phone layout) |
+| `Expanded` | Fills remaining space in a Row/Column with configurable `flex` ratio |
+| `MediaQuery` | Reads device width to decide layout breakpoint (`> 600 → wide`) |
+
+### Layout Behaviour
+
+- **Wide screens (> 600 px):** A `Row` with two `Expanded` panels (flex 2 : 1) displays main content beside a sidebar. Feature cards arrange in a horizontal `Row`.
+- **Narrow screens (≤ 600 px):** Everything stacks in a single `Column`. The sidebar moves below the main content. Feature cards stack vertically.
+
+### Code Snippet
+
+```dart
+final width = MediaQuery.of(context).size.width;
+final isWide = width > 600;
+
+// Wide → horizontal Row; Narrow → vertical Column
+isWide
+  ? Row(children: [
+      Expanded(flex: 2, child: mainContent),
+      Expanded(flex: 1, child: sidebar),
+    ])
+  : Column(children: [mainContent, sidebar]);
+```
+
+### How to Run
+
+```powershell
+cd frontend
+flutter pub get
+flutter run -d chrome        # or flutter run -d <deviceId>
+```
+Tap the **dashboard** icon in the AppBar to open the Responsive Layout Demo.
+
+### Screenshots (place in `frontend/screenshots/`)
+
+- `./screenshots/responsive_wide.png` — Wide / tablet layout
+- `./screenshots/responsive_narrow.png` — Narrow / phone layout
+
+### Reflection
+
+- **MediaQuery** lets the app read the device's screen dimensions at build time, enabling conditional layout logic without third-party packages.
+- **Expanded & Flexible** distribute remaining space proportionally, making fluid layouts straightforward.
+- **Challenge:** Deciding the breakpoint value (600 px) — tested across Chrome resizes and emulator rotation to settle on a value that felt natural.
+
 
