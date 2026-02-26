@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'profile_page.dart';
 import 'screens/widget_tree_demo.dart';
+import 'screens/favorites_add_screen.dart';
+import 'screens/favorites_list_screen.dart';
 
 class TaskListPage extends StatelessWidget {
   const TaskListPage({super.key});
@@ -63,7 +65,7 @@ class TaskListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Firestore Tasks + Secure Profile'),
+        title: const Text('Firestore Tasks + Secure Profile + Favorites'),
         actions: [
           IconButton(
             tooltip: 'Widget Tree Demo',
@@ -145,6 +147,30 @@ class TaskListPage extends StatelessWidget {
                     },
                   ),
                 ),
+          IconButton(
+            tooltip: 'Favorites – Screen A',
+            icon: const Icon(Icons.favorite_border),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const FavoritesAddScreen(),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            tooltip: 'Favorites – Screen B',
+            icon: const Icon(Icons.list),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const FavoritesListScreen(),
+                ),
+              );
+            },
+          ),
               );
             },
           );
