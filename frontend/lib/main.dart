@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'task_list_page.dart';
 import 'screens/auth_screen.dart';
 import 'state/favorites_provider.dart';
+import 'theme/colors.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +23,18 @@ class MyApp extends StatelessWidget {
       create: (_) => FavoritesProvider(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(primarySwatch: Colors.blue),
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: kColorScheme,
+          appBarTheme: AppBarTheme(
+            backgroundColor: kPrimaryColor,
+            foregroundColor: Colors.white,
+          ),
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: kAccentColor,
+            foregroundColor: Colors.black,
+          ),
+        ),
         home: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {

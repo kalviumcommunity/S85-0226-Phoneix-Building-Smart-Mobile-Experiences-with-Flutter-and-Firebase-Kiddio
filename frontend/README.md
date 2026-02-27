@@ -181,6 +181,19 @@ flutter pub get
 ## Pro Tip
 The FlutterFire CLI ensures your Firebase SDKs are always correctly configured and updated — one command saves hours of manual editing and debugging.
 
+## **Colors**
+
+- **Primary (Soft Blue):** `#4A90E2` — Kiddio's main brand color used for app bars and primary UI accents.
+- **Accent (Soft Yellow):** `#FFD54F` — Used for floating action buttons and highlights.
+- **Files:** Color constants live in `lib/theme/colors.dart` as `kPrimaryColor` and `kAccentColor`.
+- **How to change:** Edit `lib/theme/colors.dart`, adjust the hex values, then rebuild the app with:
+
+```powershell
+cd frontend
+flutter pub get
+flutter run
+```
+
 
 # Firebase Auth Flow — Flutter
 
