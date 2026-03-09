@@ -5,6 +5,7 @@ import 'firestore_demo.dart';
 import 'responsive_layout.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'asset_demo_screen.dart';
 import 'stateless_stateful_demo.dart';
 
 
@@ -49,6 +50,11 @@ class ResponsiveHome extends StatelessWidget {
             tooltip: 'Responsive Layout Demo',
             icon: const Icon(Icons.dashboard),
             onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ResponsiveLayout())),
+          ),
+          IconButton(
+            tooltip: 'Assets Demo',
+            icon: const Icon(Icons.image),
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AssetDemoScreen())),
           ),
         ],
       ),
