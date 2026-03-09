@@ -38,6 +38,16 @@
 ```
 
 **tasks/{taskId}**
+
+---
+
+## Night Mode Feature
+
+Kiddio now supports **Night Mode** for late-night bookings (10pm–6am). The UI automatically switches to a dark theme during these hours, providing a comfortable experience for users making bookings late at night.
+
+- Night Mode is applied across all screens, including Firestore task lists.
+- Colors and backgrounds adapt for better visibility and reduced eye strain.
+- No manual toggle required; Night Mode activates based on system time.
 ```
 {
   "userId": "uid123",

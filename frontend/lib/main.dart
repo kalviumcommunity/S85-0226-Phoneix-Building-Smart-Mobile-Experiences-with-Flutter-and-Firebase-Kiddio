@@ -19,20 +19,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Night Mode: 10pm-6am
+    final now = DateTime.now();
+    final isNightMode = now.hour >= 22 || now.hour < 6;
+
     return ChangeNotifierProvider(
       create: (_) => FavoritesProvider(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: kColorScheme,
+          colorScheme: isNightMode ? kNightColorScheme : kColorScheme,
           appBarTheme: AppBarTheme(
-            backgroundColor: kPrimaryColor,
-            foregroundColor: Colors.white,
+            backgroundColor: isNightMode ? kNightColorScheme.primary : kPrimaryColor,
+            foregroundColor: isNightMode ? kNightColorScheme.onPrimary : Colors.white,
           ),
           floatingActionButtonTheme: FloatingActionButtonThemeData(
-            backgroundColor: kAccentColor,
-            foregroundColor: Colors.black,
+            backgroundColor: isNightMode ? kNightColorScheme.secondary : kAccentColor,
+            foregroundColor: isNightMode ? kNightColorScheme.onSecondary : Colors.black,
           ),
         ),
         home: StreamBuilder<User?>(
