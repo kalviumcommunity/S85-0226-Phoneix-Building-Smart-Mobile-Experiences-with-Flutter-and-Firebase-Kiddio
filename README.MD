@@ -111,3 +111,13 @@ For more details, see the [frontend/README.md](frontend/README.md).
   ```
 
   Ensure your Firestore collection `caregivers` contains documents with fields like `name`, `skills`, `location`, and optionally `rating`.
+
+## Routes
+
+- **/login**: Shows the authentication screen. Use `Navigator.pushNamed(context, '/login')` to navigate.
+- **/home**: Shows the main task list page. Use `Navigator.pushNamed(context, '/home')` to navigate.
+- **/profile**: Shows the current user's profile. The route resolves the signed-in user and opens `ProfilePage` with the user's UID. Use `Navigator.pushNamed(context, '/profile')` to navigate.
+
+Notes:
+- If no user is signed in, `/profile` redirects to the auth screen.
+- Routes are registered in `lib/main.dart` under the `routes` table.
