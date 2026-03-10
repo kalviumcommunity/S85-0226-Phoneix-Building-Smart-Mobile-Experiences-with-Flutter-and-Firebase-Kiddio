@@ -7,6 +7,7 @@ import 'task_list_page.dart';
 import 'screens/auth_screen.dart';
 import 'state/favorites_provider.dart';
 import 'theme/colors.dart';
+import 'profile_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +40,16 @@ class MyApp extends StatelessWidget {
             foregroundColor: isNightMode ? kNightColorScheme.onSecondary : Colors.black,
           ),
         ),
+        routes: {
+          '/login': (ctx) => const AuthScreen(),
+          '/home': (ctx) => const TaskListPage(),
+          '/profile': (ctx) {
+            final user = FirebaseAuth.instance.currentUser;
+            if (user == null) return const AuthScreen();
+            return ProfilePage(userId: user.uid);
+          },
+        },
+
         home: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
