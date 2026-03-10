@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 
 import '../state/favorites_provider.dart';
+import 'profile_details_form.dart';
 
 /// Profile Tab — shows user info and sign-out option.
 /// State is preserved across tab switches thanks to PageView.
@@ -98,6 +99,19 @@ class ProfileTab extends StatelessWidget {
                         icon: Icons.work,
                         label: 'Experience',
                         value: '${data['yearsOfExperience'] ?? 0} years',
+                      ),
+                      const Divider(),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.edit_outlined),
+                          label: const Text('Edit Profile Details'),
+                          onPressed: () {
+                            Navigator.of(context).pushNamed(
+                              ProfileDetailsFormScreen.routeName,
+                            );
+                          },
+                        ),
                       ),
                     ],
                   );

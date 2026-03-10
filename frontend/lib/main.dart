@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'screens/auth_screen.dart';
 import 'screens/quick_tabs_navigation.dart';
+import 'screens/profile_details_form.dart';
 import 'state/favorites_provider.dart';
 import 'theme/colors.dart';
 import 'profile_page.dart';
@@ -48,6 +49,8 @@ class MyApp extends StatelessWidget {
             if (user == null) return const AuthScreen();
             return ProfilePage(userId: user.uid);
           },
+          ProfileDetailsFormScreen.routeName: (ctx) =>
+              const ProfileDetailsFormScreen(),
         },
 
         home: StreamBuilder<User?>(
