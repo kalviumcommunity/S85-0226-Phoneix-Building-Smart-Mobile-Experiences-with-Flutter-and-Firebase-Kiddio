@@ -351,6 +351,7 @@ Included widgets:
 
 - `lib/widgets/info_card.dart` — `InfoCard` is a small stateless card component that displays an icon, title, subtitle and accepts an optional `onTap`.
 - `lib/widgets/custom_button.dart` — `CustomButton` is a simple wrapper around `ElevatedButton` for consistent styling.
+- `lib/widgets/favorite_toggle_button.dart` — `FavoriteToggleButton` is a reusable **stateful** icon button with a small "pop" animation used to toggle favorites consistently across the app.
 
 Usage examples (already wired in the app):
 
@@ -364,20 +365,36 @@ InfoCard(
 );
 ```
 
+```dart
+// Reusable favorite toggle (UI-only) — state is controlled by parent/provider
+FavoriteToggleButton(
+  isFavorite: isFav,
+  onToggle: () {
+    final notifier = context.read<FavoritesProvider>();
+    isFav ? notifier.removeFavorite(item) : notifier.addFavorite(item);
+  },
+);
+```
+
 Screens demonstrating reuse:
 
 - `lib/screens/responsive_home.dart` — uses `InfoCard` instances in both tablet and phone layouts.
 - `lib/screens/details_screen.dart` — shows a single `InfoCard` instance.
+- `lib/screens/explore_tab.dart` — reuses `FavoriteToggleButton` for favorite/unfavorite interaction in the item grid.
+- `lib/screens/favorites_list_screen.dart` — reuses `FavoriteToggleButton` to remove items from favorites.
 
 Add screenshots showing the widget reused in multiple places (place in `frontend/screenshots/`):
 
 - `./screenshots/info_card_home.png`
 - `./screenshots/info_card_details.png`
+- `./screenshots/favorite_button_explore.png`
+- `./screenshots/favorite_button_favorites_list.png`
 
 Reflection:
 
 - Reusable widgets reduce duplication and centralize UI updates.
 - Challenges: designing flexible APIs (props) so widgets are useful in multiple contexts.
+- Modularity matters in team projects because multiple developers can build screens quickly using shared UI building blocks, and visual changes stay consistent by updating the widget once.
 
 Why logout is important:
 Prevents unauthorized access and clears session securely.

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../state/favorites_provider.dart';
+import '../widgets/favorite_toggle_button.dart';
 
 /// Explore Tab — browse items and add/remove favorites.
 /// State is preserved via Provider and PageView, so switching tabs
@@ -96,14 +97,10 @@ class ExploreTab extends StatelessWidget {
                           Text(item,
                               style:
                                   const TextStyle(fontWeight: FontWeight.w500)),
-                          IconButton(
-                            icon: Icon(
-                              isFav ? Icons.favorite : Icons.favorite_border,
-                              color: isFav ? Colors.red : Colors.grey,
-                            ),
-                            onPressed: () {
-                              final notifier =
-                                  context.read<FavoritesProvider>();
+                          FavoriteToggleButton(
+                            isFavorite: isFav,
+                            onToggle: () {
+                              final notifier = context.read<FavoritesProvider>();
                               isFav
                                   ? notifier.removeFavorite(item)
                                   : notifier.addFavorite(item);
