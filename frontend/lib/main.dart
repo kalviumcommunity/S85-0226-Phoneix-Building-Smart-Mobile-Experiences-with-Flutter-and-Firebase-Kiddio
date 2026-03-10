@@ -3,8 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
-import 'task_list_page.dart';
 import 'screens/auth_screen.dart';
+import 'screens/quick_tabs_navigation.dart';
 import 'state/favorites_provider.dart';
 
 Future<void> main() async {
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
               return const AuthScreen();
             }
 
-            return const TaskListPage();
+            return const QuickTabsNavigation();
           },
         ),
       ),
