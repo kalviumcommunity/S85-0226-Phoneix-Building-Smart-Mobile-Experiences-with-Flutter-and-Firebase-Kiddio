@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'screens/cert_upload.dart';
 
 class ProfilePage extends StatelessWidget {
   final String userId;
@@ -100,6 +101,19 @@ class ProfilePage extends StatelessWidget {
                       onPressed: () => _editExperience(context, experience),
                     ),
                   ],
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => CertUpload(userId: userId),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.photo_camera),
+                  label: const Text('Upload Certification Photo'),
                 ),
               ],
             ),
