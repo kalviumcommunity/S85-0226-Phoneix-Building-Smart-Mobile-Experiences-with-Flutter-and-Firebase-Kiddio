@@ -113,6 +113,7 @@ class _ProfileDetailsFormScreenState extends State<ProfileDetailsFormScreen> {
 
     setState(() => _saving = true);
     try {
+      // Save profile fields to Firestore
       await FirebaseFirestore.instance.collection('users').doc(user.uid).set(
         {
           'name': _fullNameController.text.trim(),
@@ -122,6 +123,12 @@ class _ProfileDetailsFormScreenState extends State<ProfileDetailsFormScreen> {
         },
         SetOptions(merge: true),
       );
+
+      // Update Firebase Auth password
+      final newPassword = _passwordController.text;
+      if (newPassword.isNotEmpty) {
+        await user.updatePassword(newPassword);
+      }
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -206,9 +213,9 @@ class _ProfileDetailsFormScreenState extends State<ProfileDetailsFormScreen> {
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
                   textInputAction: TextInputAction.next,
-                  inputFormatters: const [
+                  inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(10),
+                     LengthLimitingTextInputFormatter(10),
                   ],
                   decoration: const InputDecoration(
                     labelText: 'Phone Number',

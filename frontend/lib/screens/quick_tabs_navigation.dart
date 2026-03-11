@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'home_tab.dart';
 import 'explore_tab.dart';
+import 'location_preview_screen.dart';
 import 'profile_tab.dart';
 
 /// QuickTabs Navigation — uses BottomNavigationBar + PageView + PageController
@@ -31,6 +32,7 @@ class _QuickTabsNavigationState extends State<QuickTabsNavigation> {
   final List<Widget> _screens = const [
     HomeTab(),
     ExploreTab(),
+    LocationPreviewScreen(),
     ProfileTab(),
   ];
 
@@ -85,6 +87,11 @@ class _QuickTabsNavigationState extends State<QuickTabsNavigation> {
             icon: Icon(Icons.explore_outlined),
             activeIcon: Icon(Icons.explore),
             label: 'Explore',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.map_outlined),
+            activeIcon: Icon(Icons.map),
+            label: 'Map',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
