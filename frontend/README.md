@@ -345,7 +345,13 @@ Take screenshots of the app in portrait and landscape, and include them here whe
 
 ## Reusable Custom Widgets
 
-This project demonstrates reusable custom widgets placed under `lib/widgets/` and reused across screens.
+This project demonstrates reusable custom widgets placed under `lib/widgets/` and reused across multiple screens to keep the UI modular and consistent.
+
+### Sprint-2: Reusable Widget Implementation
+
+- **Widget name**: `FavoriteToggleButton` (stateful)
+- **Purpose**: A reusable favorite/unfavorite icon button with a small "pop" animation.
+- **Why it helps**: Centralizes behavior + styling so a UI change in one widget updates every screen that uses it.
 
 Included widgets:
 
@@ -353,20 +359,28 @@ Included widgets:
 - `lib/widgets/custom_button.dart` — `CustomButton` is a simple wrapper around `ElevatedButton` for consistent styling.
 - `lib/widgets/favorite_toggle_button.dart` — `FavoriteToggleButton` is a reusable **stateful** icon button with a small "pop" animation used to toggle favorites consistently across the app.
 
-Usage examples (already wired in the app):
+Code snippet (widget definition):
 
 ```dart
-// Create an InfoCard
-InfoCard(
-	title: 'Profile',
-	subtitle: 'View details',
-	icon: Icons.person,
-	onTap: () => Navigator.push(...),
-);
+class FavoriteToggleButton extends StatefulWidget {
+  final bool isFavorite;
+  final VoidCallback onToggle;
+
+  const FavoriteToggleButton({
+    super.key,
+    required this.isFavorite,
+    required this.onToggle,
+  });
+
+  @override
+  State<FavoriteToggleButton> createState() => _FavoriteToggleButtonState();
+}
 ```
 
+Usage example 1 (in `lib/screens/explore_tab.dart`):
+
 ```dart
-// Reusable favorite toggle (UI-only) — state is controlled by parent/provider
+// Reusable favorite toggle (UI-only) — state is controlled by Provider
 FavoriteToggleButton(
   isFavorite: isFav,
   onToggle: () {
@@ -376,12 +390,22 @@ FavoriteToggleButton(
 );
 ```
 
-Screens demonstrating reuse:
+Usage example 2 (in `lib/screens/favorites_list_screen.dart`):
 
-- `lib/screens/responsive_home.dart` — uses `InfoCard` instances in both tablet and phone layouts.
-- `lib/screens/details_screen.dart` — shows a single `InfoCard` instance.
-- `lib/screens/explore_tab.dart` — reuses `FavoriteToggleButton` for favorite/unfavorite interaction in the item grid.
-- `lib/screens/favorites_list_screen.dart` — reuses `FavoriteToggleButton` to remove items from favorites.
+```dart
+FavoriteToggleButton(
+  isFavorite: true,
+  onToggle: () {
+    context.read<FavoritesProvider>().removeFavorite(item);
+  },
+);
+```
+
+Screens demonstrating widget reuse:
+
+- `lib/screens/details_screen.dart` — uses `InfoCard` (stateless reusable widget)
+- `lib/screens/explore_tab.dart` — uses `FavoriteToggleButton` (stateful reusable widget)
+- `lib/screens/favorites_list_screen.dart` — uses `FavoriteToggleButton` again (same widget, different screen)
 
 Add screenshots showing the widget reused in multiple places (place in `frontend/screenshots/`):
 
@@ -392,9 +416,12 @@ Add screenshots showing the widget reused in multiple places (place in `frontend
 
 Reflection:
 
-- Reusable widgets reduce duplication and centralize UI updates.
-- Challenges: designing flexible APIs (props) so widgets are useful in multiple contexts.
-- Modularity matters in team projects because multiple developers can build screens quickly using shared UI building blocks, and visual changes stay consistent by updating the widget once.
+- **How do reusable widgets improve code organization?**
+  - They reduce duplication and keep UI logic in one place, making screens smaller and easier to read.
+- **Why is modularity important in team-based development?**
+  - Teams can share building blocks, keep a consistent design system, and ship faster with fewer merge conflicts.
+- **What challenges did you face while refactoring into widgets?**
+  - Designing a flexible widget API (`isFavorite`, `onToggle`, `size`) so the same widget works in different screens.
 
 Why logout is important:
 Prevents unauthorized access and clears session securely.
