@@ -1,123 +1,68 @@
-# Kiddio Project
+# Kiddio
 
-A Flutter-based task management application with Firebase integration.
+Kiddio is a Flutter app that helps caregivers and families manage tasks, profiles, and scheduling. The app uses Firebase for authentication, Firestore for structured data, and Firebase Storage for user-uploaded files.
 
-## Recently Implemented Features
+This workspace contains the Flutter frontend in the `frontend/` folder.
 
-### Managing Images, Icons, and Local Assets (Sprint 3.24)
+## New Feature: Certification Photo Upload
 
-Organized, registered, and displayed local assets (images and icons) alongside Flutter's built-in Material and Cupertino icon libraries.
+Caregivers can now upload photos of their certifications from their profile. The flow is:
 
-#### Asset Folder Structure
+- Open `ProfilePage` (Profile) in the app.
+- Tap **Upload Certification Photo** to open the uploader.
+- Choose an existing photo or take a new picture.
+- The image is uploaded to Firebase Storage under `certifications/<userId>/` and a record is written to Firestore at `users/<userId>/certifications` with the file URL.
 
-```
-frontend/
-  assets/
-   ├── images/
-   │    ├── logo.png
-   │    ├── banner.jpg
-   │    └── background.png
-   └── icons/
-        ├── star.png
-        └── profile.png
-```
+Implementation notes:
 
-#### pubspec.yaml Configuration
+- UI: `lib/screens/cert_upload.dart` — image picker, upload progress, and Firestore record creation.
+- Profile integration: `lib/profile_page.dart` now contains a button to navigate to the uploader.
+- Dependencies added to `pubspec.yaml`: `firebase_storage`, `image_picker`.
 
-```yaml
-flutter:
-  uses-material-design: true
-  assets:
-    - assets/images/
-    - assets/icons/
+## Setup & Run
+
+1. Ensure you have Flutter installed (compatible with SDK constraints in `pubspec.yaml`).
+2. Configure Firebase for the app (Android/iOS/web): add platform configuration files and initialize Firebase in `main.dart`. The project already contains `firebase_options.dart` to help initialize Firebase.
+3. Add required packages and run:
+
+```bash
+cd frontend
+flutter pub get
 ```
 
-#### Displaying Local Images
+4. Platform-specific setup:
 
-```dart
-// Simple image widget
-Image.asset(
-  'assets/images/logo.png',
-  width: 150,
-  height: 150,
-  fit: BoxFit.cover,
-)
+- Android: add camera and storage permissions in `AndroidManifest.xml` if you plan to use the camera/pick images.
+- iOS: add `NSCameraUsageDescription` and `NSPhotoLibraryUsageDescription` to `Info.plist` for camera/photo access.
 
-// Image as a container background
-Container(
-  decoration: BoxDecoration(
-    image: DecorationImage(
-      image: AssetImage('assets/images/background.png'),
-      fit: BoxFit.cover,
-    ),
-  ),
-  child: Center(
-    child: Text('Welcome to Flutter!',
-        style: TextStyle(color: Colors.white, fontSize: 22)),
-  ),
-)
+5. Run the app:
+
+```bash
+flutter run
 ```
 
-#### Using Built-in Icons
+## Code Locations
 
-```dart
-// Material Icons
-Row(
-  mainAxisAlignment: MainAxisAlignment.center,
-  children: [
-    Icon(Icons.star, color: Colors.amber, size: 36),
-    Icon(Icons.flutter_dash, color: Colors.blue, size: 36),
-    Icon(Icons.android, color: Colors.green, size: 36),
-    Icon(Icons.apple, color: Colors.grey, size: 36),
-  ],
-)
+- Upload screen: `lib/screens/cert_upload.dart`
+- Profile integration: `lib/profile_page.dart`
+- Firestore demo: `lib/screens/firestore_demo.dart`
 
-// Cupertino (iOS) Icons
-Icon(CupertinoIcons.heart_fill, color: Colors.red, size: 32)
-```
+## How the upload works (developer summary)
 
-#### Reflection
+- The uploader uses `image_picker` to select or take a photo.
+- The selected file is uploaded to Firebase Storage and upload progress is displayed to the user.
+- After a successful upload the code saves a document under `users/<userId>/certifications` with the `url` and `uploadedAt` timestamp.
 
-- **What steps are necessary to load assets correctly in Flutter?**  
-  Create an organized folder under `assets/`, register each directory in `pubspec.yaml` under `flutter: assets:`, then run `flutter pub get` to refresh the build.
+## Notes & Next Steps
 
-- **What common errors did you face while configuring pubspec.yaml?**  
-  YAML is whitespace-sensitive — incorrect indentation (tabs instead of spaces, or wrong nesting level) causes silent build failures. File path mismatches between code and the actual folder also trigger "missing asset" errors.
+- Make sure Firebase rules allow authenticated users to upload to the `certifications/` path and write to their own `users/<uid>/certifications` collection.
+- Consider adding image resizing/validation on-device before upload for bandwidth.
+- Optionally, surface previously uploaded certification thumbnails on the Profile screen.
 
-- **How do proper asset management practices support scalability?**  
-  Grouping assets into categorical sub-folders (`images/`, `icons/`, `fonts/`) keeps the project maintainable as it grows. Registering entire directories instead of individual files reduces pubspec churn when new assets are added.
+If you want, I can:
+
+- Add a thumbnail list of uploaded certifications to the profile page.
+- Add server-side validation or rules snippets to the README.
 
 ---
-
-- **UI State Handling**: 
-  - Implemented checkbox-based task status management (Pending/Completed).
-  - Integrated Firestore to persist status changes in real-time.
-  - Added "Remember me" functionality to the Authentication screen.
-- **Improved Core Flow**:
-  - Restored the authentication state stream in `main.dart` to allow automatic routing between Auth and the Task List.
-
-For more details, see the [frontend/README.md](frontend/README.md).
-
-## Caregiver Search Screen
-
-- **File:** [frontend/lib/screens/caregiver_search.dart](frontend/lib/screens/caregiver_search.dart)
-- **Description:** A simple caregiver search UI that reads documents from the Firestore `caregivers` collection and displays results in a `ListView.separated`. The search box performs client-side, case-insensitive filtering by name, skills, or location.
-- **Usage:** To show the screen in the app you can push it from anywhere in your Flutter app, for example:
-
-  ```dart
-  Navigator.of(context).push(
-    MaterialPageRoute(builder: (_) => const CaregiverSearch()),
-  );
-  ```
-
-  Ensure your Firestore collection `caregivers` contains documents with fields like `name`, `skills`, `location`, and optionally `rating`.
-
-## Routes
-
-- **/login**: Shows the authentication screen. Use `Navigator.pushNamed(context, '/login')` to navigate.
-- **/home**: Shows the main task list page. Use `Navigator.pushNamed(context, '/home')` to navigate.
-- **/profile**: Shows the current user's profile. The route resolves the signed-in user and opens `ProfilePage` with the user's UID. Use `Navigator.pushNamed(context, '/profile')` to navigate.
-
-Notes:
-- If no user is signed in, `/profile` redirects to the auth screen.
-- Routes are registered in `lib/main.dart` under the `routes` table.
+Updated: certification photo upload feature added and README expanded.
