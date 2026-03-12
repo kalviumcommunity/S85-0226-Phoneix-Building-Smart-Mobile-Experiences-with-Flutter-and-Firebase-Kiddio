@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../state/favorites_provider.dart';
 import '../widgets/favorite_toggle_button.dart';
+import 'location_preview_screen.dart';
 
 /// Explore Tab — browse items and add/remove favorites.
 /// State is preserved via Provider and PageView, so switching tabs
@@ -28,6 +29,15 @@ class ExploreTab extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Explore'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            tooltip: 'Open location map',
+            icon: const Icon(Icons.map_outlined),
+            onPressed: () {
+              Navigator.of(context).pushNamed(LocationPreviewScreen.routeName);
+            },
+          ),
+        ],
       ),
       body: CustomScrollView(
         slivers: [
