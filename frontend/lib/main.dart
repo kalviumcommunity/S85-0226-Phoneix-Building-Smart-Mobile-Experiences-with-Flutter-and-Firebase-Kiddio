@@ -7,6 +7,8 @@ import 'screens/auth_screen.dart';
 import 'screens/quick_tabs_navigation.dart';
 import 'screens/profile_details_form.dart';
 import 'screens/location_preview_screen.dart';
+import 'screens/notifications_screen.dart';
+import 'services/notification_service.dart';
 import 'state/favorites_provider.dart';
 import 'task_list_page.dart';
 import 'theme/colors.dart';
@@ -15,6 +17,10 @@ import 'profile_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  // Initialize Firebase Cloud Messaging (permissions + token + listeners)
+  await NotificationService.instance.initialize();
+
   runApp(const MyApp());
 }
 
@@ -55,6 +61,7 @@ class MyApp extends StatelessWidget {
               const ProfileDetailsFormScreen(),
           LocationPreviewScreen.routeName: (ctx) =>
               const LocationPreviewScreen(),
+          '/notifications': (ctx) => const NotificationsScreen(),
         },
 
         home: StreamBuilder<User?>(
