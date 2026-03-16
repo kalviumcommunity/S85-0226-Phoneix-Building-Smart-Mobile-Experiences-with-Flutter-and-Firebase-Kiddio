@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'live_items_viewer_screen.dart';
+
 /// Home Tab — displays user's Firestore tasks with add & toggle support.
 class HomeTab extends StatelessWidget {
   const HomeTab({super.key});
@@ -27,6 +29,15 @@ class HomeTab extends StatelessWidget {
       appBar: AppBar(
         title: Text('Home — ${user?.email ?? "Guest"}'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            tooltip: 'Live Items Viewer',
+            onPressed: () {
+              Navigator.pushNamed(context, LiveItemsViewerScreen.routeName);
+            },
+            icon: const Icon(Icons.data_object),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'home_fab',
