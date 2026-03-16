@@ -59,6 +59,37 @@ flutter run
 - Consider adding image resizing/validation on-device before upload for bandwidth.
 - Optionally, surface previously uploaded certification thumbnails on the Profile screen.
 
+## Sprint 2 Demo: Hot Reload, Debug Console, DevTools
+
+This repository now includes a quick demonstration in `frontend/lib/screens/home_tab.dart`:
+- A demo counter with `debugPrint()` logs.
+- A text box at the top designed for fast Hot Reload iteration.
+- Task list stays live from Firestore.
+
+### How to run the demo
+1. Open terminal and run:
+   ```bash
+   cd frontend
+   flutter pub get
+   flutter run
+   ```
+2. When app is running, open the Home tab.
+3. Tap “Increment Demo Counter” and watch logs in the Debug Console.
+4. Change any UI text in `home_tab.dart` and save; use Hot Reload (`r` in terminal or ⚡ button in VS Code).
+5. Open DevTools from VS Code command palette ("Flutter: Open DevTools") to inspect widgets, performance, and memory.
+
+### What to capture for submission
+- Screenshot after Hot Reload showing changed text.
+- Screenshot of Debug Console showing `demo counter incremented` messages.
+- Screenshot of Flutter DevTools Widget Inspector or Performance view.
+
+### Reflection
+- **Hot Reload** improves productivity by applying UI/code changes instantly without full restart.
+- **Debug Console** gives real-time runtime visibility for state changes and errors via `debugPrint()`.
+- **DevTools** helps inspect widget hierarchy and optimize performance, especially in team debugging.
+
+If you need, I can also add a short `DEMO.md` file with one-command steps and sample screenshots for your PR description.
+
 If you want, I can:
 
 - Add a thumbnail list of uploaded certifications to the profile page.
