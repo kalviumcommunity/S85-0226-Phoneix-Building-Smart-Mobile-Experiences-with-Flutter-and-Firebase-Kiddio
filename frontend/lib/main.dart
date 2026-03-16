@@ -7,6 +7,7 @@ import 'screens/auth_screen.dart';
 import 'screens/quick_tabs_navigation.dart';
 import 'screens/profile_details_form.dart';
 import 'screens/location_preview_screen.dart';
+import 'screens/live_items_viewer_screen.dart';
 import 'state/favorites_provider.dart';
 import 'task_list_page.dart';
 import 'theme/colors.dart';
@@ -55,6 +56,8 @@ class MyApp extends StatelessWidget {
               const ProfileDetailsFormScreen(),
           LocationPreviewScreen.routeName: (ctx) =>
               const LocationPreviewScreen(),
+            LiveItemsViewerScreen.routeName: (ctx) =>
+              const LiveItemsViewerScreen(),
         },
 
         home: StreamBuilder<User?>(
