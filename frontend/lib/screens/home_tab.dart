@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'live_items_viewer_screen.dart';
-
-/// Home Tab — full CRUD for user-specific items under `/users/{uid}/items`.
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
 
@@ -13,179 +10,102 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  CollectionReference<Map<String, dynamic>> _itemsRef(String uid) {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection('items');
+
   }
 
-  Future<void> _createItem(String uid) async {
+  Future<void> _showAddTaskSheet({required String userId}) async {
     final titleController = TextEditingController();
-    final descController = TextEditingController();
+    final descriptionController = TextEditingController();
 
-    final created = await showDialog<bool>(
+    if (!mounted) return;
+    final created = await showModalBottomSheet<bool>(
       context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: const Text('Create item'),
-          content: Column(
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (context) {
+        final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 8,
+            bottom: 16 + bottomInset,
+          ),
+          child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(
-                  labelText: 'Title',
-                ),
-                textInputAction: TextInputAction.next,
+              Text(
+                'Add task',
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 12),
               TextField(
-                controller: descController,
+                controller: titleController,
+                autofocus: true,
+                textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(
-                  labelText: 'Description',
+                  labelText: 'Title',
+                  hintText: 'e.g. Pick up meds',
+                  border: OutlineInputBorder(),
                 ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: descriptionController,
                 minLines: 2,
                 maxLines: 4,
+                decoration: const InputDecoration(
+                  labelText: 'Description (optional)',
+                  hintText: 'Any details you want to remember',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              FilledButton.icon(
+                onPressed: () async {
+                  final title = titleController.text.trim();
+                  final description = descriptionController.text.trim();
+                  if (title.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Please enter a title.')),
+                    );
+                    return;
+                  }
+
+                  await FirebaseFirestore.instance.collection('tasks').add({
+                    'userId': userId,
+                    'title': title,
+                    'description': description,
+                    'status': 'pending',
+                    'createdAt': FieldValue.serverTimestamp(),
+                    'updatedAt': FieldValue.serverTimestamp(),
+                  });
+
+                  if (context.mounted) Navigator.pop(context, true);
+                },
+                icon: const Icon(Icons.add),
+                label: const Text('Create task'),
+              ),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel'),
-            ),
-            FilledButton(
-              onPressed: () async {
-                final title = titleController.text.trim();
-                final desc = descController.text.trim();
-                if (title.isEmpty) return;
-                await _itemsRef(uid).add({
-                  'title': title,
-                  'description': desc,
-                  'createdAt': DateTime.now().millisecondsSinceEpoch,
-                });
-                if (ctx.mounted) Navigator.pop(ctx, true);
-              },
-              child: const Text('Save'),
-            ),
-          ],
         );
       },
     );
 
     titleController.dispose();
-    descController.dispose();
+    descriptionController.dispose();
 
-    if (created == true && mounted) {
+    if (!mounted) return;
+    if (created == true) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Item created')),
+        const SnackBar(content: Text('Task created.')),
       );
-    }
-  }
-
-  Future<void> _editItem({
-    required String uid,
-    required String id,
-    required String currentTitle,
-    required String currentDesc,
-  }) async {
-    final titleController = TextEditingController(text: currentTitle);
-    final descController = TextEditingController(text: currentDesc);
-
-    final updated = await showDialog<bool>(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: const Text('Edit item'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(
-                  labelText: 'Title',
-                ),
-                textInputAction: TextInputAction.next,
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: descController,
-                decoration: const InputDecoration(
-                  labelText: 'Description',
-                ),
-                minLines: 2,
-                maxLines: 4,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel'),
-            ),
-            FilledButton(
-              onPressed: () async {
-                final title = titleController.text.trim();
-                final desc = descController.text.trim();
-                if (title.isEmpty) return;
-                await _itemsRef(uid).doc(id).update({
-                  'title': title,
-                  'description': desc,
-                  'updatedAt': DateTime.now().millisecondsSinceEpoch,
-                });
-                if (ctx.mounted) Navigator.pop(ctx, true);
-              },
-              child: const Text('Update'),
-            ),
-          ],
-        );
-      },
-    );
-
-    titleController.dispose();
-    descController.dispose();
-
-    if (updated == true && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Item updated')),
-      );
-    }
-  }
-
-  Future<void> _deleteItem({
-    required String uid,
-    required String id,
-  }) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: const Text('Delete item?'),
-          content: const Text(
-            'This action cannot be undone.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel'),
-            ),
-            FilledButton.tonal(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Delete'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (confirmed == true) {
-      await _itemsRef(uid).doc(id).delete();
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Item deleted')),
-        );
-      }
     }
   }
 
@@ -196,7 +116,7 @@ class _HomeTabState extends State<HomeTab> {
     if (user == null) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('My Items'),
+
         ),
         body: Center(
           child: Padding(
@@ -238,7 +158,7 @@ class _HomeTabState extends State<HomeTab> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         heroTag: 'home_fab',
         onPressed: () => _createItem(uid),
         child: const Icon(Icons.add),
@@ -330,11 +250,122 @@ class _HomeTabState extends State<HomeTab> {
                       ),
                     ],
                   ),
-                ),
-              );
-            },
-          );
-        },
+                  ButtonSegment(
+                    value: _TaskFilter.pending,
+                    label: Text('Pending'),
+                    icon: Icon(Icons.radio_button_unchecked),
+                  ),
+                  ButtonSegment(
+                    value: _TaskFilter.completed,
+                    label: Text('Completed'),
+                    icon: Icon(Icons.check_circle_outline),
+                  ),
+                ],
+                selected: {_filter},
+                onSelectionChanged: (selection) {
+                  setState(() => _filter = selection.first);
+                },
+              ),
+            ),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: _queryForUserTasks(user.uid).snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text('Error: ${snapshot.error}'),
+                      ),
+                    );
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  final tasks = snapshot.data?.docs ?? [];
+                  if (tasks.isEmpty) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.inbox_outlined,
+                              size: 48,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              _filter == _TaskFilter.completed
+                                  ? 'No completed tasks yet.'
+                                  : _filter == _TaskFilter.pending
+                                      ? 'No pending tasks — nice work.'
+                                      : 'No tasks yet.',
+                              style: Theme.of(context).textTheme.titleMedium,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Tap “Add task” to create your first one.',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 16),
+                            FilledButton.icon(
+                              onPressed: () => _showAddTaskSheet(userId: user.uid),
+                              icon: const Icon(Icons.add),
+                              label: const Text('Add task'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+
+                  return ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                    itemCount: tasks.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 8),
+                    itemBuilder: (context, index) {
+                      final task = tasks[index];
+                      final data = task.data();
+                      final title = (data['title'] as String?)?.trim();
+                      final description = (data['description'] as String?)?.trim();
+                      final isCompleted = data['status'] == 'completed';
+
+                      return Card(
+                        clipBehavior: Clip.antiAlias,
+                        child: ListTile(
+                          leading: Icon(
+                            isCompleted
+                                ? Icons.check_circle
+                                : Icons.radio_button_unchecked,
+                            color: isCompleted
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.outline,
+                          ),
+                          title: Text(title?.isNotEmpty == true ? title! : 'Untitled'),
+                          subtitle: (description?.isNotEmpty == true)
+                              ? Text(description!)
+                              : null,
+                          trailing: Switch(
+                            value: isCompleted,
+                            onChanged: (val) => _toggleTaskStatus(
+                              taskId: task.id,
+                              completed: val,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
