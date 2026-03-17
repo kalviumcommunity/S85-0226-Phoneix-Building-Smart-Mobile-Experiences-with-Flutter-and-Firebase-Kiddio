@@ -5,6 +5,8 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+import java.util.Properties
+
 android {
     namespace = "com.example.frontend"
     compileSdk = flutter.compileSdkVersion
@@ -30,11 +32,34 @@ android {
         versionName = flutter.versionName
     }
 
+    val keystoreProperties = Properties()
+    val keystorePropertiesFile = rootProject.file("key.properties")
+    if (keystorePropertiesFile.exists()) {
+        keystorePropertiesFile.inputStream().use { keystoreProperties.load(it) }
+    }
+
+    signingConfigs {
+        // Only configure release signing if key.properties exists.
+        if (keystorePropertiesFile.exists()) {
+            create("release") {
+                keyAlias = keystoreProperties["keyAlias"] as String?
+                keyPassword = keystoreProperties["keyPassword"] as String?
+                storeFile = file(keystoreProperties["storeFile"] as String)
+                storePassword = keystoreProperties["storePassword"] as String?
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // Use proper release signing when available; otherwise fall back to debug
+            // so `flutter run --release` still works on fresh checkouts.
+            signingConfig = signingConfigs.findByName("release")
+                ?: signingConfigs.getByName("debug")
+
+            // Optional optimizations — keep disabled unless you add proguard rules.
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 }
