@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-enum _TaskFilter { all, pending, completed }
-
-/// Home Tab — displays user's Firestore tasks with add & toggle support.
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
 
@@ -13,44 +10,7 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  _TaskFilter _filter = _TaskFilter.all;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  Query<Map<String, dynamic>> _queryForUserTasks(String userId) {
-    final base = FirebaseFirestore.instance
-        .collection('tasks')
-        .where('userId', isEqualTo: userId);
-
-    switch (_filter) {
-      case _TaskFilter.all:
-        return base
-            .orderBy('updatedAt', descending: true)
-            .orderBy('createdAt', descending: true);
-      case _TaskFilter.pending:
-        return base
-            .where('status', isEqualTo: 'pending')
-            .orderBy('updatedAt', descending: true)
-            .orderBy('createdAt', descending: true);
-      case _TaskFilter.completed:
-        return base
-            .where('status', isEqualTo: 'completed')
-            .orderBy('updatedAt', descending: true)
-            .orderBy('createdAt', descending: true);
-    }
-  }
-
-  Future<void> _toggleTaskStatus({
-    required String taskId,
-    required bool completed,
-  }) async {
-    await FirebaseFirestore.instance.collection('tasks').doc(taskId).update({
-      'status': completed ? 'completed' : 'pending',
-      'updatedAt': FieldValue.serverTimestamp(),
-    });
   }
 
   Future<void> _showAddTaskSheet({required String userId}) async {
@@ -156,8 +116,7 @@ class _HomeTabState extends State<HomeTab> {
     if (user == null) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Home'),
-          centerTitle: true,
+
         ),
         body: Center(
           child: Padding(
@@ -165,15 +124,10 @@ class _HomeTabState extends State<HomeTab> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.lock_outline,
-                  size: 48,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                const Icon(Icons.lock_outline, size: 48),
                 const SizedBox(height: 12),
-                Text(
-                  'Sign in to see your tasks.',
-                  style: Theme.of(context).textTheme.titleMedium,
+                const Text(
+                  'Please sign in to manage your items.',
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
@@ -188,29 +142,113 @@ class _HomeTabState extends State<HomeTab> {
       );
     }
 
+    final uid = user.uid;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Tasks — ${user.email ?? "Account"}'),
+        title: const Text('My Items (CRUD)'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            tooltip: 'Live Items Viewer',
+            onPressed: () {
+              Navigator.pushNamed(context, LiveItemsViewerScreen.routeName);
+            },
+            icon: const Icon(Icons.data_object),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'home_fab',
-        onPressed: () => _showAddTaskSheet(userId: user.uid),
-        icon: const Icon(Icons.add),
-        label: const Text('Add task'),
+        onPressed: () => _createItem(uid),
+        child: const Icon(Icons.add),
       ),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-              child: SegmentedButton<_TaskFilter>(
-                segments: const [
-                  ButtonSegment(
-                    value: _TaskFilter.all,
-                    label: Text('All'),
-                    icon: Icon(Icons.list),
+      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        stream: _itemsRef(uid)
+            .orderBy('createdAt', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text('Error: ${snapshot.error}'),
+              ),
+            );
+          }
+
+          final docs = snapshot.data?.docs ?? [];
+          if (docs.isEmpty) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.inbox_outlined, size: 48),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'No items yet.',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Tap the + button to create your first item.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          return ListView.separated(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            itemCount: docs.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 4),
+            itemBuilder: (context, index) {
+              final doc = docs[index];
+              final data = doc.data();
+              final title = (data['title'] as String?) ?? '';
+              final desc = (data['description'] as String?) ?? '';
+
+              return Card(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: ListTile(
+                  title: Text(
+                    title.isEmpty ? 'Untitled item' : title,
+                  ),
+                  subtitle: desc.isNotEmpty ? Text(desc) : null,
+                  onTap: () => _editItem(
+                    uid: uid,
+                    id: doc.id,
+                    currentTitle: title,
+                    currentDesc: desc,
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        tooltip: 'Edit',
+                        icon: const Icon(Icons.edit_outlined),
+                        onPressed: () => _editItem(
+                          uid: uid,
+                          id: doc.id,
+                          currentTitle: title,
+                          currentDesc: desc,
+                        ),
+                      ),
+                      IconButton(
+                        tooltip: 'Delete',
+                        icon: const Icon(Icons.delete_outline),
+                        onPressed: () => _deleteItem(uid: uid, id: doc.id),
+                      ),
+                    ],
                   ),
                   ButtonSegment(
                     value: _TaskFilter.pending,
