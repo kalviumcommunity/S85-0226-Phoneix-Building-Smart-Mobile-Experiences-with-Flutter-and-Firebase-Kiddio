@@ -1,23 +1,32 @@
+Vansh hehehehehe hohoho hehehee haaaaaaaaaaa
 
-# fullstack-docker-app
 
-A simple fullstack app with React frontend, Express backend, and PostgreSQL database using Docker Compose.
+काग़ज़ के फूल लाऊँ तेरे लिए
+ख़त लिखूँ तेरे लिए
+मैं ख़ुदा में मानूँ नहीं
+पर माँगूँ दुआ तेरे लिए
+तेरे लिए घर बनाऊँ
+दीवार नीले रंग से सजाऊँ
+पसंद है तुम्हें, मालूम है
+तुमने बताया था एक दफ़े
+नीले फूल लाऊँ तेरे लिए
+ख़त लिखूँ तेरे लिए
+मैं ख़ुदा में मानूँ नहीं
+पर माँगूँ दुआ तेरे लिए
 
-## Structure
 
-- `backend/` - Node.js + Express + PostgreSQL backend
-- `frontend/` - React frontend
-- `db-data/` - Database volume (empty folder)
-- `.env` - Environment variables (empty for now)
-- `docker-compose.yml` - Docker Compose configuration
 
-## Setup
 
-1. Clone the repo
-2. Run `docker-compose up` to start all services
+तेरी बातें नासमझ सी, फिर भी जायज़ लग रही हैं
+तू परेशाँ कर रही है, फिर भी मासूम लग रही है
 
-## Author
 
-Shivansh Garg
-=======
-# Mini-Project
+तेरे लिए मंदिर जाऊँ
+तेरे नाम का दिया जलाऊँ
+हँसता रहे तू चाहे जो हो
+तेरी हँसी को नज़र ना लगे
+काग़ज़ के फूल लाऊँ तेरे लिए
+ख़त लिखूँ तेरे लिए
+मैं ख़ुदा में मानूँ नहीं
+पर माँगूँ दुआ तेरे लिए
+
