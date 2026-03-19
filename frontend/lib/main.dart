@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'screens/home_tab.dart';
 import 'screens/multi_device_check_screen.dart';
-import 'screens/responsive_design_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,8 +24,6 @@ class MyApp extends StatelessWidget {
       routes: {
         MultiDeviceCheckScreen.routeName: (ctx) =>
             const MultiDeviceCheckScreen(),
-        ResponsiveDesignScreen.routeName: (ctx) =>
-            const ResponsiveDesignScreen(),
       },
       home: const HomeTab(),
     );
