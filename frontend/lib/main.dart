@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'screens/home_tab.dart';
 import 'screens/multi_device_check_screen.dart';
+import 'screens/profile_details_form_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +25,8 @@ class MyApp extends StatelessWidget {
       routes: {
         MultiDeviceCheckScreen.routeName: (ctx) =>
             const MultiDeviceCheckScreen(),
+        ProfileDetailsFormScreen.routeName: (ctx) =>
+            const ProfileDetailsFormScreen(),
       },
       home: const HomeTab(),
     );
