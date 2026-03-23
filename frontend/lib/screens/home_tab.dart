@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'multi_device_check_screen.dart';
+import 'profile_details_form_screen.dart';
 
 /// Home Tab — displays user's Firestore tasks with add & toggle support.
 class HomeTab extends StatelessWidget {
@@ -30,6 +31,13 @@ class HomeTab extends StatelessWidget {
         title: Text('Home — ${user?.email ?? "Guest"}'),
         centerTitle: true,
         actions: [
+          IconButton(
+            tooltip: 'Profile Details Form',
+            onPressed: () {
+              Navigator.pushNamed(context, ProfileDetailsFormScreen.routeName);
+            },
+            icon: const Icon(Icons.assignment_turned_in_outlined),
+          ),
           IconButton(
             tooltip: 'Multi-Device Check',
             onPressed: () {
