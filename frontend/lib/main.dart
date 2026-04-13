@@ -1,35 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart'; // Add dotenv
+import 'core/router.dart';
+import 'core/theme.dart';
+import 'core/theme_provider.dart';
+import 'firebase_options.dart';
 
-import 'screens/home_tab.dart';
-import 'screens/multi_device_check_screen.dart';
-import 'screens/profile_details_form_screen.dart';
-
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const MyApp());
+  try {
+    await dotenv.load(fileName: ".env"); // Load .env
+  } catch (e) {
+    debugPrint("Failed to load .env file: $e");
+    // Optionally create a default empty map if load fails so access won't crash immediately 
+    // but the app might still fail if env vars are critical.
+  }
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  
+  runApp(const ProviderScope(child: KiddioApp()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class KiddioApp extends ConsumerWidget {
+  const KiddioApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the router provider
+    final router = ref.watch(routerProvider);
+    final themeMode = ref.watch(themeModeProvider);
+
+    return MaterialApp.router(
+      title: 'Kiddio',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.teal,
-      ),
-      routes: {
-        MultiDeviceCheckScreen.routeName: (ctx) =>
-            const MultiDeviceCheckScreen(),
-        ProfileDetailsFormScreen.routeName: (ctx) =>
-            const ProfileDetailsFormScreen(),
-      },
-      home: const HomeTab(),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: themeMode,
+      routerConfig: router,
     );
   }
 }
-
